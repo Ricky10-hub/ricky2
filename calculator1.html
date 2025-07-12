@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Todo List</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            min-height: 100vh;
+        }
+
+        p {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .riky, .date-input, .ram {
+            padding: 10px;
+            font-size: 16px;
+            flex: 1 1 180px;
+        }
+
+        .ram {
+            background-color: royalblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .sonia {
+            display: grid;
+            grid-template-columns: 1fr 1fr 100px;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .sonia > div {
+            background-color: white;
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        button {
+            background-color: crimson;
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        @media (max-width: 500px) {
+            .sonia {
+                grid-template-columns: 1fr;
+            }
+
+            .sonia > div {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <p>Todo List</p>
+    <div class="input-section">
+        <input placeholder="Todo name" class="riky">
+        <input type="date" class="date-input">
+        <button class='ram' onclick="addTodo()">Add</button>
+    </div>
+
+    <div class="sonia">
+        <!-- Todo items appear here -->
+    </div>
+
+    <script>
+        let todolist = [];
+
+        // Load data from localStorage
+        const savedTodos = localStorage.getItem('todolist');
+        if (savedTodos) {
+            todolist = JSON.parse(savedTodos);
+            renderTodo();
+        }
+
+        function renderTodo() {
+            let d = '';
+            for (let i = 0; i < todolist.length; i++) {
+                const { name, dueDate } = todolist[i];
+                d += `
+                    <div>${name}</div>
+                    <div>${dueDate}</div>
+                    <div><button onclick="
+                        deleteTodo(${i})
+                    ">Delete</button></div>
+                `;
+            }
+            document.querySelector('.sonia').innerHTML = d;
+        }
+
+        function addTodo() {
+            const nameInput = document.querySelector('.riky');
+            const dateInput = document.querySelector('.date-input');
+            const name = nameInput.value.trim();
+            const dueDate = dateInput.value;
+
+            if (name && dueDate) {
+                todolist.push({ name, dueDate });
+                updateLocalStorage();
+                nameInput.value = '';
+                dateInput.value = '';
+                renderTodo();
+            }
+        }
+
+        function deleteTodo(index) {
+            todolist.splice(index, 1);
+            updateLocalStorage();
+            renderTodo();
+        }
+
+        function updateLocalStorage() {
+            localStorage.setItem('todolist', JSON.stringify(todolist));
+        }
+    </script>
+</body>
+</html>
